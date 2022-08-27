@@ -1,1 +1,1 @@
-web: npm build-app
+web: npm run build-app
