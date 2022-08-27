@@ -9,7 +9,7 @@
     "postinstall": "tsc",
     "watch-node": "nodemon dist/app.js",
     "watch-ts": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
