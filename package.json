@@ -4,13 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && npm run start",
+    "build-app": "tsc && npm run start",
     "start": "node dist/app.js",
     "postinstall": "tsc",
     "watch-node": "nodemon dist/app.js",
     "watch-ts": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "nodemon": "nodemon src/app.ts"
   },
   "author": "",
   "license": "ISC",
