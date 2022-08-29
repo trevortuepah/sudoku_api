@@ -1,4 +1,4 @@
-import { EMPTY_SPACE, GRID_SIZE, SudokuBoard  } from "./types";
+import { EMPTY_SPACE, GRID_SIZE, MoveInputs, SudokuBoard  } from "./types";
 import * as data from "./data/puzzles.json";
 
 export const getNewBoard = (): SudokuBoard | undefined => {
@@ -8,15 +8,7 @@ export const getNewBoard = (): SudokuBoard | undefined => {
   }
 }
 
-export const parseBoard = (board: string) => {
-  try {
-    return JSON.parse(board);
-  } catch (err) {
-    console.log('error while parsing board', err);
-
-  }
-}
-
+// Verify that the board is a proper shape for Sudoku
 export const validateBoard = (board: SudokuBoard) => {
   //Check to see if the board has 9 rows
   if (board.length !== 9) {
@@ -31,16 +23,28 @@ export const validateBoard = (board: SudokuBoard) => {
   return true;
 }
 
+// Verify that the input received from an API call is the expected type
+export const validateInput = (input: any): input is MoveInputs => {
+  const { board, value, coordinates } = input;
+  if (!board || !value || !coordinates) {
+    return false;
+  }
+  const [row, column] = coordinates;
+  if (!Number.isInteger(value) || !Number.isInteger(row) || !Number.isInteger(column)) {
+    return false;
+  }
+  if (!Array.isArray(board)) {
+    return false;
+  }
+  if (!board.every((row) => Array.isArray(row))) {
+    return false;
+  }
+  return true;
+}
+
+// Verify that the move fits within sudoku rules
 export const validateMove = (board: SudokuBoard, value: number, coordinates: number[]) => {
   const [rowCoordinate, columnCoordinate] = coordinates;
-
-  if (!Number.isInteger(value)) {
-    return {valid: false, message: "Value provided for move is not found or invalid"};
-  }
-
-  if (!Number.isInteger(rowCoordinate) || !Number.isInteger(columnCoordinate)) {
-    return { valid: false, message: "Row and column for move must both be provided as numbers"};
-  }
 
   for (let val of [value, rowCoordinate, columnCoordinate]) {
     if (val < 0 || val > GRID_SIZE - 1) {
