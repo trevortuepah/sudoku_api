@@ -14,47 +14,33 @@ const getSudokuBoard = (_request: Request, response: Response) => {
 }
 
 const updateTile = (request: Request, response: Response) => {
-  const input = request.body;
-  if(!validateInput(input)) {
+  try{
+    const input = request.body;
+    validateInput(input);
+    const { board, value, coordinates } = input;
+    validateBoard(board);
+    validateMove(board, value, coordinates)
+    const updatedBoard = updateBoard(board, value, coordinates);
+    return response.status(200).json(updatedBoard);
+  } catch (error) {
     return response.status(400).json({
-      error: 'Input did not match the expected shape'
+      error: error.message,
     });
   }
-  const { board, value, coordinates } = input;
-  if (!validateBoard(board)) {
-    return response.status(400).json({
-      error: `Board is not a valid ${GRID_SIZE} x ${GRID_SIZE} grid`
-    });
-  }
-  const { valid, message } = validateMove(board, value, coordinates);
-  if (!valid) {
-    return response.status(400).json({
-      error: message,
-    });
-  }
-  const updatedBoard = updateBoard(board, value, coordinates);
-  return response.status(200).json(updatedBoard);
 }
 
 const eraseTile = (request: Request, response: Response) => {
-  const input = request.body;
-  if (!validateInput(input)) {
+  try{
+    const input = request.body;
+    validateInput(input);
+    const { board, coordinates } = input;
+    validateBoard(board);
+    validateMove(board, EMPTY_SPACE, coordinates)
+    const updatedBoard = updateBoard(board, EMPTY_SPACE, coordinates);
+    return response.status(200).json(updatedBoard);
+  } catch (error) {
     return response.status(400).json({
-      error: 'Input did not match the expected shape, value must be a number, board must be a nested ${GRID_SIZE} x ${GRID_SIZE} array and coordinates must be an array of length 2'
+      error: error.message,
     });
   }
-  const { board, coordinates } = input;
-  if (!validateBoard(board)) {
-    return response.status(400).json({
-      error: `Board is not a valid ${GRID_SIZE} x ${GRID_SIZE} grid`
-    });
-  }
-  const { valid, message } = validateMove(board, EMPTY_SPACE, coordinates);
-  if (!valid) {
-    return response.status(400).json({
-      error: message,
-    });
-  }
-  const updatedBoard = updateBoard(board, EMPTY_SPACE, coordinates);
-  return response.status(200).json(updatedBoard);
 }

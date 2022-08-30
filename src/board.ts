@@ -9,15 +9,15 @@ export const getNewBoard = (): SudokuBoard | undefined => {
 }
 
 // Verify that the board is a proper shape for Sudoku
-export const validateBoard = (board: SudokuBoard) => {
-  //Check to see if the board has 9 rows
+export const validateBoard = (board: SudokuBoard): boolean => {
+  //Check to see if the board has correct number of rows
   if (board.length !== GRID_SIZE) {
-    return false;
+    throw new Error(`Board does not have ${GRID_SIZE} rows`);
   }
-  // Check each row to make sure it has 9 corresponding columns
+  // Check each row to make sure it has correct number of corresponding columns
   for (let row of board) {
     if (row.length !== GRID_SIZE) {
-      return false;
+      throw new Error(`Board does not have ${GRID_SIZE} columns in every row`)
     }
   }
   return true;
@@ -27,50 +27,50 @@ export const validateBoard = (board: SudokuBoard) => {
 export const validateInput = (input: any): input is MoveInputs => {
   const { board, value, coordinates } = input;
   if (!board || !value || !coordinates) {
-    return false;
+    throw new Error("Not all input parameters are defined")
   }
   const [row, column] = coordinates;
   if (!Number.isInteger(value) || !Number.isInteger(row) || !Number.isInteger(column)) {
-    return false;
+    throw new Error("One of row, column or value inputs is not a number")
   }
   if (!Array.isArray(board)) {
-    return false;
+    throw new Error("Board is not an array");
   }
   if (!board.every((row) => Array.isArray(row))) {
-    return false;
+    throw new Error("A row entry exists that is not an array")
   }
   return true;
 }
 
 // Verify that the move fits within sudoku rules
-export const validateMove = (board: SudokuBoard, value: number, coordinates: number[]) => {
+export const validateMove = (board: SudokuBoard, value: number, coordinates: number[]): boolean => {
   const [rowCoordinate, columnCoordinate] = coordinates;
 
   for (let val of [value, rowCoordinate, columnCoordinate]) {
     if (val < 0 || val > GRID_SIZE - 1) {
-      return { valid: false, message: `Coordinates and values provided must be within the range of 0 to ${GRID_SIZE - 1}`}
+      throw new Error(`Coordinates and values provided must be within the range of 0 to ${GRID_SIZE - 1}`);
     }
   }
 
   // At this point if we are doing an erase on a space, we don't need to verify against other existing numbers in the puzzle for it to be valid
   if (value === EMPTY_SPACE) {
-    return { valid: true }
+    return true;
   }
 
   // Make sure we are putting value into an empty spot
   if (board[rowCoordinate][columnCoordinate] !== EMPTY_SPACE) {
-    return { valid: false, message: "This tile already has a value. Erase it first if you'd like to update it"};
+    throw new Error("This tile already has a value. Erase it first if you'd like to update it");
   }
   
   // Make sure the row doesn't already contain the new value
   if (board[rowCoordinate].includes(value)) {
-    return { valid: false, message: "This value already exists in this row" };
+    throw new Error("This value already exists in this row");
   }
 
   // Make sure the column doesn't already contain the new value
   for (let boardRow of board) {
     if(boardRow[columnCoordinate] === value) {
-      return { valid: false, message: "This value already exists in this column" };
+      throw new Error("This value already exists in this column");
     }
   }
 
@@ -82,12 +82,11 @@ export const validateMove = (board: SudokuBoard, value: number, coordinates: num
     for (let c = 0; c < 3; c++) {
       const col = colBox * 3 + c;
       if (board[row][col] === value) {
-        return { valid: false, message: "This value already exists in this box" };
+        throw new Error("This value already exists in this box");
       }
     }
   }
-
-  return { valid: true };
+  return true;
 }
 
 // Since we validate every move to make sure column, row and box doesn't contain that value,
