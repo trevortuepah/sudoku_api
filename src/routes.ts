@@ -3,6 +3,7 @@ import { getNewBoard, updateBoard, validateBoard, validateInput, validateMove } 
 import { EMPTY_SPACE } from './types';
 
 export const initRoutes = (app: Express) => {
+  app.get('/', getSudokuBoard)
   app.get('/newgame', getSudokuBoard);
   app.post('/update', updateTile);
   app.post('/erase', eraseTile);
