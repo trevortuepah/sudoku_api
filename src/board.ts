@@ -11,12 +11,12 @@ export const getNewBoard = (): SudokuBoard | undefined => {
 // Verify that the board is a proper shape for Sudoku
 export const validateBoard = (board: SudokuBoard) => {
   //Check to see if the board has 9 rows
-  if (board.length !== 9) {
+  if (board.length !== GRID_SIZE) {
     return false;
   }
   // Check each row to make sure it has 9 corresponding columns
   for (let row of board) {
-    if (row.length !== 9) {
+    if (row.length !== GRID_SIZE) {
       return false;
     }
   }

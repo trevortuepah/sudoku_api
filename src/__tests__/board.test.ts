@@ -1,4 +1,5 @@
 import { validateMove } from "../board";
+import { EMPTY_SPACE } from "../types";
 
 const testBoard = [
   [0,7,0,0,0,0,0,4,3],
@@ -44,15 +45,17 @@ describe('validateMove', () => {
       const validate = validateMove(testBoard, 3, [1, 2]);
       expect(validate.valid).toEqual(true);
     });
-    test('if you try to erase a space that already exists', () => {
-      
+    test('if you try to erase a space that has a value', () => {
+      const validate = validateMove(testBoard, EMPTY_SPACE, [0,1]);
+      expect(validate.valid).toEqual(true);
     })
   });
 })
 
 
 /* Additional test cases to cover:
-
-
-
+validateInput: I think it's important to be able to make sure that the incoming input is properly formatted and of the right type, otherwise there could be errors accessing and updating the values in the board
+updateTile: since this function is also used when erasing want to make sure we get expected responses from the API and get a properly updated board back so the player doesn't experience strange behaviour, such as 
+            updating a tile and getting the wrong board back. This function is also used by eraseTile so it needs to be well tested
+checkWin: Would be frustrating for a user to finish their game and not be properly alerted that it is a winning board
 */
