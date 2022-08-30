@@ -1,6 +1,6 @@
 import { Express, Request, Response } from 'express';
 import { getNewBoard, updateBoard, validateBoard, validateInput, validateMove } from './board';
-import { EMPTY_SPACE, GRID_SIZE } from './types';
+import { EMPTY_SPACE } from './types';
 
 export const initRoutes = (app: Express) => {
   app.get('/newgame', getSudokuBoard);
@@ -32,7 +32,9 @@ const updateTile = (request: Request, response: Response) => {
 const eraseTile = (request: Request, response: Response) => {
   try{
     const input = request.body;
-    validateInput(input);
+
+    // don't expect the value input from the request when erasing
+    validateInput({ ...input, value: EMPTY_SPACE });
     const { board, coordinates } = input;
     validateBoard(board);
     validateMove(board, EMPTY_SPACE, coordinates)

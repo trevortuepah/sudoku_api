@@ -26,7 +26,7 @@ export const validateBoard = (board: SudokuBoard): boolean => {
 // Verify that the input received from an API call is the expected type
 export const validateInput = (input: any): input is MoveInputs => {
   const { board, value, coordinates } = input;
-  if (!board || !value || !coordinates) {
+  if (!board || !coordinates) {
     throw new Error("Not all input parameters are defined")
   }
   const [row, column] = coordinates;
